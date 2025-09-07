@@ -101,10 +101,24 @@ const Gallery = () => {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
               Discover amazing AI-generated artwork created by our community
             </p>
-            <Button className="btn-gradient" onClick={() => navigate("/create")}>
-              Create Your Own
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                className="btn-gradient"
+                onClick={() => navigate("/create")}
+              >
+                Create Your Own
+              </Button>
+              <Button
+                className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white shadow-lg hover:opacity-90 transition"
+                onClick={() =>
+                  window.open("https://imaginify-ten-liart.vercel.app/", "_blank")
+                }
+              >
+                Enhance Your Image
+              </Button>
+            </div>
           </div>
+
 
           {/* Filters */}
           <div className="mb-8 flex flex-col lg:flex-row gap-4 items-center justify-between">
@@ -197,11 +211,10 @@ const Gallery = () => {
                           <Button
                             size="sm"
                             variant="secondary"
-                            className={`h-8 w-8 p-0 ${
-                              likedPosts.has(post._id)
-                                ? "bg-red-500 hover:bg-red-600 text-white"
-                                : "bg-white/90 hover:bg-white"
-                            }`}
+                            className={`h-8 w-8 p-0 ${likedPosts.has(post._id)
+                              ? "bg-red-500 hover:bg-red-600 text-white"
+                              : "bg-white/90 hover:bg-white"
+                              }`}
                             onClick={(e) => {
                               e.stopPropagation();
                               handleLike(post._id);
