@@ -33,7 +33,7 @@ const CreatePost = () => {
       setLoading(true);
       try {
 
-        const response = await fetch('https://ai-artgen-backtend.vercel.app//api/post', {
+        const response = await fetch('https://ai-artgen-backtend.vercel.app/api/post', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(form)
@@ -71,7 +71,7 @@ const CreatePost = () => {
       setGeneratingImg(true);
       setForm({ ...form, photo: "" });
 
-      const response = await fetch("https://ai-artgen-backtend.vercel.app//api/stability", {
+      const response = await fetch("https://ai-artgen-backtend.vercel.app/api/stability", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: form.prompt }),

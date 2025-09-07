@@ -21,7 +21,7 @@ const Gallery = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://ai-artgen-backtend.vercel.app//api/post?sort=${sortBy}`,
+        `https://ai-artgen-backtend.vercel.app/api/post?sort=${sortBy}`,
         { method: "GET", headers: { "Content-Type": "application/json" } }
       );
       if (response.ok) {
@@ -54,7 +54,7 @@ const Gallery = () => {
     const isLiked = likedPosts.has(postId);
     try {
       if (!isLiked) {
-        await fetch(`https://ai-artgen-backtend.vercel.app//api/post/${postId}/like`, { method: "PATCH" });
+        await fetch(`https://ai-artgen-backtend.vercel.app/api/post/${postId}/like`, { method: "PATCH" });
       }
       setLikedPosts((prev) =>
         isLiked
@@ -75,7 +75,7 @@ const Gallery = () => {
 
   const handleView = async (postId: string) => {
     try {
-      await fetch(`https://ai-artgen-backtend.vercel.app//api/post/${postId}/view`, { method: "PATCH" });
+      await fetch(`https://ai-artgen-backtend.vercel.app/api/post/${postId}/view`, { method: "PATCH" });
       setAllPosts((prev) =>
         prev.map((post) =>
           post._id === postId ? { ...post, views: (post.views || 0) + 1 } : post
