@@ -14,7 +14,7 @@ const SinglePostPage = () => {
 
   const fetchPost = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/post/${id}`);
+      const response = await fetch(`https://ai-artgen-backtend.vercel.app//api/post/${id}`);
       if (response.ok) {
         const result = await response.json();
         setPost(result.data);
@@ -34,7 +34,7 @@ const SinglePostPage = () => {
     if (!post) return;
     try {
       if (!liked) {
-        await fetch(`http://localhost:5000/api/post/${post._id}/like`, {
+        await fetch(`https://ai-artgen-backtend.vercel.app//api/post/${post._id}/like`, {
           method: "PATCH",
         });
         setPost((prev: any) => ({
