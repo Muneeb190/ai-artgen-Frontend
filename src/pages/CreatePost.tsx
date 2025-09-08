@@ -9,7 +9,6 @@ import { getRandomPrompt } from "@/utils";
 import { toast } from "sonner";
 
 const CreatePost = () => {
-
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -19,35 +18,45 @@ const CreatePost = () => {
     photo: "",
   });
 
-  let errors: string[] = [];
-  if (!form.prompt?.trim()) errors.push("Prompt is required");
-  if (!form.title?.trim()) errors.push("Title is required");
-  if (!form.name?.trim()) errors.push("Name is required");
-
   const [generatingImg, setGeneratingImg] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // ✅ Always re-check errors when submitting
+  const getErrors = () => {
+    const errors: string[] = [];
+    if (!form.prompt?.trim()) errors.push("Prompt is required");
+    if (!form.title?.trim()) errors.push("Title is required");
+    if (!form.name?.trim()) errors.push("Name is required");
+    return errors;
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    const errors = getErrors();
+    if (errors.length > 0) {
+      toast.info(errors.join(" • "), { duration: 5000 });
+      return;
+    }
+
     if (form.prompt && form.photo) {
       setLoading(true);
       try {
-
-        const response = await fetch('https://ai-artgen-backtend.vercel.app/api/post', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(form)
+        const response = await fetch("https://ai-artgen-backtend.vercel.app/api/post", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
         });
 
         await response.json();
-        navigate('/gallery');
+        navigate("/gallery");
       } catch (error) {
-        alert(error)
+        alert(error);
       } finally {
         setLoading(false);
       }
     } else {
-      alert("Please enter a prompt and generate an image")
+      alert("Please enter a prompt and generate an image");
     }
   };
 
@@ -61,7 +70,7 @@ const CreatePost = () => {
   };
 
   const generateImage = async () => {
-
+    const errors = getErrors();
     if (errors.length > 0) {
       toast.info(errors.join(" • "), { duration: 5000 });
       return;
@@ -71,7 +80,7 @@ const CreatePost = () => {
       setGeneratingImg(true);
       setForm({ ...form, photo: "" });
 
-      const response = await fetch("https://ai-artgen-backtend.vercel.app/api/stability", {
+      const response = await fetch("http://localhost:5000/api/gemini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: form.prompt }),
@@ -83,8 +92,9 @@ const CreatePost = () => {
         throw new Error(data.error);
       }
 
-      // ✅ Stability returns base64 image as { image: ... }
-      setForm({ ...form, photo: data.image });
+      // ✅ Fix: Gemini returns raw base64 (imageBase64)
+      const imageUrl = `data:image/png;base64,${data.imageBase64}`;
+      setForm({ ...form, photo: imageUrl });
     } catch (error: any) {
       alert(error.message || "Something went wrong");
     } finally {
@@ -196,7 +206,7 @@ const CreatePost = () => {
 
                 <Button
                   onClick={handleSubmit}
-                  disabled={!form.photo || loading}   // ✅ disable if no photo OR already submitting
+                  disabled={!form.photo || loading} // ✅ disable if no photo OR submitting
                   variant="outline"
                   className="w-full"
                 >
@@ -220,7 +230,9 @@ const CreatePost = () => {
                   {generatingImg ? (
                     <div className="flex flex-col items-center justify-center text-center space-y-3">
                       <Sparkles className="w-12 h-12 animate-spin text-purple-400" />
-                      <p className="text-purple-300 text-sm">Creating your masterpiece...</p>
+                      <p className="text-purple-300 text-sm">
+                        Creating your masterpiece...
+                      </p>
                     </div>
                   ) : (
                     <img
@@ -235,22 +247,27 @@ const CreatePost = () => {
                   <div className="grid gap-4 sm:grid-cols-2 bg-[#141427]/60 p-5 rounded-xl border border-purple-800/40 shadow-md">
                     <div>
                       <p className="text-xs text-purple-400 uppercase">Prompt</p>
-                      <p className="text-sm font-medium text-purple-100">{form.prompt}</p>
+                      <p className="text-sm font-medium text-purple-100">
+                        {form.prompt}
+                      </p>
                     </div>
                     <div>
                       <p className="text-xs text-purple-400 uppercase">Title</p>
-                      <p className="text-sm font-medium text-purple-100">{form.title}</p>
+                      <p className="text-sm font-medium text-purple-100">
+                        {form.title}
+                      </p>
                     </div>
                     <div>
                       <p className="text-xs text-purple-400 uppercase">Name</p>
-                      <p className="text-sm font-medium text-purple-100">{form.name}</p>
+                      <p className="text-sm font-medium text-purple-100">
+                        {form.name}
+                      </p>
                     </div>
                   </div>
                 )}
               </CardContent>
             </Card>
           )}
-
         </div>
       </main>
     </div>
