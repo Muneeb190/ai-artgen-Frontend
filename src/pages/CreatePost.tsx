@@ -80,7 +80,7 @@ const CreatePost = () => {
       setGeneratingImg(true);
       setForm({ ...form, photo: "" });
 
-      const response = await fetch("https://ai-artgen-backtend.vercel.app/api/gemini", {
+      const response = await fetch("https://ai-artgen-backtend.vercel.app/api/pollinations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: form.prompt }),
